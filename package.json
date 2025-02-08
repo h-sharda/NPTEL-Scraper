@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "postinstall": "npx playwright install"
+    "install": "npx playwright install-deps"
   },
   "dependencies": {
     "express": "^4.21.2",

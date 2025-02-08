@@ -1,4 +1,4 @@
-const { chromium } = require('playwright');
+const { chromium } = require('playwright-core');
 
 const SITE = "https://internalapp.nptel.ac.in/B2C/";
 
