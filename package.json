@@ -1,6 +1,8 @@
 {
+  "scripts": {
+    "postinstall": "npx playwright install"
+  },
   "dependencies": {
-    "body-parser": "^1.20.3",
     "express": "^4.21.2",
     "playwright": "^1.50.1"
   }
