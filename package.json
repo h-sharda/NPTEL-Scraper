@@ -1,13 +1,6 @@
 {
-  "name": "nptel-scraper",
-  "version": "1.0.0",
-  "main": "app.js",
-  "scripts": {
-    "start": "node app.js"
-  },
   "dependencies": {
-    "chrome-aws-lambda": "^10.1.0",
     "express": "^4.21.2",
-    "puppeteer-core": "^10.4.0"
+    "puppeteer": "^24.2.0"
   }
 }
