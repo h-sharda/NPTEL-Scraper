@@ -1,7 +1,16 @@
-// api/index.js
-const app = require('../app');
+const { processUser } = require("../fetch");
 
-// Vercel will call this exported function on every request.
-module.exports = (req, res) => {
-  return app(req, res);
+module.exports = async (req, res) => {
+    if (req.method !== "POST") {
+        return res.status(405).json({ error: "Method Not Allowed" });
+    }
+
+    const { email, dob } = req.body;
+
+    try {
+        const results = await processUser({ email, dob });
+        return res.json({ results });
+    } catch (error) {
+        return res.json({ error: error.message });
+    }
 };
