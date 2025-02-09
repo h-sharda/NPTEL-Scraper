@@ -42,6 +42,7 @@ form.addEventListener('submit', async (e) => {
             displayResults(data.results);
         }
     } catch (error) {
+        console.log(error);
         errorMessageDiv.style.display = 'block';
         errorMessageDiv.textContent = error.message;
     } finally {
