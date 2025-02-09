@@ -1,20 +1,19 @@
 const express = require('express');
 const path = require('path');
-const { processUser } = require('./fetch.js');  // Import the function from dataFetcher.js
+const { processUser } = require('./fetch.js'); 
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8000;
 
-app.use(express.json());  // Express already includes body-parser functionality
-app.use(express.static('public')); // For serving the HTML file
+app.use(express.json());  
+app.use(express.static('public'));
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));  // Serve index.html from the public folder
+    res.sendFile(path.join(__dirname, 'public', 'index.html')); 
 });
 
 app.post('/process-user', async (req, res) => {
     const { email, dob } = req.body;
-    
     try {
         const results = await processUser({ email, dob });
         res.json({ results });
@@ -23,6 +22,4 @@ app.post('/process-user', async (req, res) => {
     }
 });
 
-app.listen(PORT, () => {
-    console.log(`Server is running at http://localhost:${PORT}`);
-});
+app.listen(PORT, () => { console.log(`Server is running at http://localhost:${PORT}`); });

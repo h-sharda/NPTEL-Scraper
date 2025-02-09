@@ -3,107 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Process User</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-        }
-        form {
-            margin-bottom: 20px;
-        }
-        input {
-            padding: 8px;
-            margin: 5px;
-            width: 200px;
-        }
-        button {
-            padding: 8px 15px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        .results {
-            margin-top: 20px;
-        }
-        .result-item {
-            margin-bottom: 10px;
-        }
-    </style>
+    <title>NPTEL Results Portal</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Process User Data</h1>
-    
-    <form id="userForm">
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
-        <br>
-        <label for="rollNumber">Roll Number:</label>
-        <input type="text" id="rollNumber" name="rollNumber" required>
-        <br>
-        <button type="submit">Submit</button>
-    </form>
-    
-    <div id="loading" style="display:none;">Processing...</div>
-    <div id="errorMessage" style="color: red;"></div>
-    <div class="results" id="results"></div>
+    <div class="container">
+        <div class="card">
+            <h1 class="title">NPTEL Results Portal</h1>
 
-    <script>
-        const form = document.getElementById('userForm');
-        const resultsDiv = document.getElementById('results');
-        const loadingDiv = document.getElementById('loading');
-        const errorMessageDiv = document.getElementById('errorMessage');
-        
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
+            <form id="userForm">
+                <div class="form-group">
+                    <label for="email" class="label">Email Address</label>
+                    <input type="email" id="email" name="email" required
+                        class="input"
+                        placeholder="Enter your email address">
+                </div>
 
-            const email = document.getElementById('email').value;
-            const dob = document.getElementById('rollNumber').value;
-            
-            loadingDiv.style.display = 'block';
-            errorMessageDiv.innerText = '';
-            resultsDiv.innerHTML = '';
+                <div class="form-group">
+                    <label for="password" class="label">Date of Birth</label>
+                    <input type="date" id="password" name="password" required
+                        class="input">
+                    <p class="helper-text">Format: YYYY-MM-DD</p>
+                </div>
 
-            try {
-                const response = await fetch('/process-user', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, dob })
-                });
+                <button type="submit" class="button"> Fetch Results </button>
+            </form>
 
-                const data = await response.json();
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                <span>Fetching your results...</span>
+            </div>
 
-                if (data.error) {
-                    errorMessageDiv.innerText = `Error: ${data.error}`;
-                } else {
-                    displayResults(data.results);
-                }
-            } catch (error) {
-                errorMessageDiv.innerText = `Error: ${error.message}`;
-            } finally {
-                loadingDiv.style.display = 'none';
-            }
-        });
+            <div id="errorMessage" class="error"></div>
 
-        function displayResults(results) {
-            results.forEach(result => {
-                const div = document.createElement('div');
-                div.classList.add('result-item');
-                div.innerHTML = `
-                    <strong>Name:</strong> ${result.Name}<br>
-                    <strong>Course Name:</strong> ${result['Course Name']}<br>
-                    <strong>Assignment (25):</strong> ${result['Assignment (25)']}<br>
-                    <strong>Exam (75):</strong> ${result['Exam (75)']}<br>
-                    <strong>Total (100):</strong> ${result['Total (100)']}<br><br>
-                `;
-                resultsDiv.appendChild(div);
-            });
-        }
-    </script>
+            <div id="results" class="results"></div>
+        </div>
+    </div>
+
+    <script src="scripts.js"></script>
 </body>
 </html>
