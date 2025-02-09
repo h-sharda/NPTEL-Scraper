@@ -34,13 +34,13 @@ form.addEventListener('submit', async (e) => {
             body: JSON.stringify({ email, dob })
         });
 
-        const data = await response.json();
+        const text = await response.text(); // Read response as text
+        console.log('Response text:', text);
 
-        if (data.error) {
-            throw new Error(data.error);
-        } else {
-            displayResults(data.results);
-        }
+        const data = JSON.parse(text); // Try to parse as JSON
+        if (data.error) throw new Error(data.error);
+        displayResults(data.results);
+
     } catch (error) {
         console.log(error);
         errorMessageDiv.style.display = 'block';
