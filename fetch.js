@@ -1,12 +1,16 @@
-const puppeteer = require("puppeteer");
+const chromium = require("chrome-aws-lambda");
+const puppeteer = require("puppeteer-core");
 
 const SITE = "https://internalapp.nptel.ac.in/B2C/";
 
 async function processUser(userData) {
     const { email, dob } = userData;
+
     const browser = await puppeteer.launch({
-        headless: "new", 
-        args: ["--no-sandbox", "--disable-setuid-sandbox"], 
+        executablePath: await chromium.executablePath,
+        headless: chromium.headless,
+        args: chromium.args,
+        defaultViewport: chromium.defaultViewport,
     });
 
     const page = await browser.newPage();
