@@ -1,5 +1,5 @@
 {
-  "name": "nptel-scarper",
+  "name": "nptel-scraper",
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
@@ -7,15 +7,7 @@
     "install-playwright": "npx playwright install chromium"
   },
   "dependencies": {
-    "chrome-aws-lambda": "^10.1.0",
     "express": "^4.21.2",
-<<<<<<< HEAD
     "playwright": "^1.51.1"
-=======
-    "puppeteer-core": "^24.2.0"
-  },
-  "scripts": {
-    "start": "node app.js"
->>>>>>> 037ac53d22c04359c98ef880b4cf292032f3150c
   }
 }

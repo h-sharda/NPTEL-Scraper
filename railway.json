@@ -1,6 +1,5 @@
 {
-    "build": {
-      "install": "npm install && npm run install-playwright"
-    }
+  "build": {
+    "install": "npm install && npm run install-playwright"
   }
-  
+}
