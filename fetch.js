@@ -1,48 +1,59 @@
-const { chromium } = require("playwright");
+const chromium = require("chrome-aws-lambda");
+const puppeteer = require("puppeteer-core");
 
 const SITE = "https://internalapp.nptel.ac.in/B2C/";
 
 async function processUser(userData) {
     const { email, dob } = userData;
-    const browser = await chromium.launch({ headless: true });
-    const page = await browser.newPage();
 
+    const browser = await puppeteer.launch({
+        executablePath: await chromium.executablePath,
+        headless: chromium.headless,
+        args: chromium.args,
+        defaultViewport: chromium.defaultViewport,
+    });
+
+    const page = await browser.newPage();
     let results = [];
+
     try {
-        await page.goto(SITE);
-        await page.fill(`input[placeholder="Email ID"]`, email);
-        await page.fill(`input[placeholder="Password (Format: YYYY-MM-DD)"]`, dob);
-        await page.press('input[placeholder="Password (Format: YYYY-MM-DD)"]', 'Enter');
-        
-        await page.click("text=Click to view Results: October 2024", { timeout: 5000 });
-        const newPagePromise = page.waitForEvent("popup");
-        const newPage = await newPagePromise;
+        await page.goto(SITE, { waitUntil: "networkidle2" });
+        await page.type('input[placeholder="Email ID"]', email);
+        await page.type('input[placeholder="Password (Format: YYYY-MM-DD)"]', dob);
+        await page.keyboard.press("Enter");
+
+        await page.waitForSelector("text=Click to view Results: October 2024", { timeout: 5000 });
+        const [newPage] = await Promise.all([
+            new Promise(resolve => page.once("popup", resolve)),
+            page.click("text=Click to view Results: October 2024"),
+        ]);
 
         await newPage.bringToFront();
         await newPage.waitForSelector("#exam_score");
-    
+
         const table = await newPage.$("#exam_score");
-        results = await extractTableData(table);
+        results = await extractTableData(newPage, table);
+
         console.log(`Successfully processed ${email}`);
     } catch (error) {
         console.log(`Error processing ${email}: ${error.message}`);
-        results = ("Please check the email and password again");
+        results = "Please check the email and password again";
     } finally {
         await browser.close();
         return results;
     }
 }
 
-async function extractTableData(table) {
+async function extractTableData(page, table) {
     const rows = await table.$$("tr");
-    
     let data = [];
-    for (let i = 1; i < rows.length; i++) { 
+
+    for (let i = 1; i < rows.length; i++) {
         const columns = await rows[i].$$("td");
         if (columns.length > 0) {
-            const assignment = Number(await columns[3].innerText());
-            const exam = Number(await columns[4].innerText());
-            const total = Number(await columns[5].innerText());
+            const assignment = Number(await page.evaluate(el => el.innerText, columns[3]));
+            const exam = Number(await page.evaluate(el => el.innerText, columns[4]));
+            const total = Number(await page.evaluate(el => el.innerText, columns[5]));
 
             let message = "";
             if (total < 40 || exam < 30 || assignment < 10) message = "Sorry you failed this subject, better luck next time";
@@ -52,8 +63,8 @@ async function extractTableData(table) {
             else message = "Congrats you passed this subject";
 
             const rowData = {
-                "Name": await columns[1].innerText(),
-                "Course Name": await columns[2].innerText(),
+                "Name": await page.evaluate(el => el.innerText, columns[1]),
+                "Course Name": await page.evaluate(el => el.innerText, columns[2]),
                 "Assignment (25)": assignment,
                 "Exam (75)": exam,
                 "Total (100)": total,
