@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
+    "start": "PLAYWRIGHT_BROWSERS_PATH=0 node app.js",
     "install-playwright": "npx playwright install chromium"
   },
   "dependencies": {
