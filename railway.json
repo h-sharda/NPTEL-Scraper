@@ -1,5 +1,5 @@
 {
   "build": {
-    "install": "npm install && npx playwright install"
+    "install": "PLAYWRIGHT_BROWSERS_PATH=0 npm install && npx playwright install chromium"
   }
 }
